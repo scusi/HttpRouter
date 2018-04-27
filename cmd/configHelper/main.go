@@ -27,7 +27,7 @@ func defaultConfig() *datastructs.Config {
 	var s []datastructs.SubdomainRoute
 	s = append(s, datastructs.SubdomainRoute{Subdomain: "one.scusi.io", Backend: "http://box.scusi.io/"})
 	s = append(s, datastructs.SubdomainRoute{Subdomain: "two.scusi.io", Backend: "http://blog.fefe.de"})
-	dConfig := &Config{
+	dConfig := &datastructs.Config{
 		Addr:   "127.0.0.1",
 		TLS:    true,
 		Port:   "443",
