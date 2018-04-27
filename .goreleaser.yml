@@ -1,0 +1,46 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+builds:
+ -
+   main: "cmd/HttpRouter/main.go"
+   binary: "HttpRouter"
+   goos:
+           - windows
+           - linux
+           - darwin
+   goarch:
+           - amd64
+           - 386
+           - arm
+           - arm64
+ - 
+   main: "cmd/configHelper/main.go"
+   binary: "configHelper"
+   goos:
+           - windows
+           - linux
+           - darwin
+   goarch:
+           - amd64
+           - 386
+           - arm
+           - arm64
+archive:
+  files:
+   - README.md
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
