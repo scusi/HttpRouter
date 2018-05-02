@@ -53,9 +53,9 @@ func main() {
 	log.Info("starting up")
 
 	router := mux.NewRouter()
-	for _, domain := range cfg.Routes {
-		router.Host(domain.Subdomain).Handler(http.Handler(NewReverseProxy(domain.Backend)))
-		log.WithFields(log.Fields{"Host": domain.Subdomain, "Backend": domain.Backend}).Info("Router added")
+	for _, route := range cfg.Routes {
+		router.Host(route.Subdomain).Handler(http.Handler(NewReverseProxy(route.Backend)))
+		log.WithFields(log.Fields{"Host": route.Subdomain, "Backend": route.Backend}).Info("Router added")
 	}
 
 	if cfg.TLS != true {
@@ -72,14 +72,25 @@ func main() {
 }
 
 // NewReverseProyx returns a HTTPHandler that is a reverseProxy for the given URL
-//
-// rproxy := NewReverseProxy("http://scusi.io/")
+// It ajusts the Host header via a custom ReverseProxy.Director function.
 //
 func NewReverseProxy(URL string) *httputil.ReverseProxy {
+	// parse the supplied URL
 	rpURL, err := url.Parse(URL)
 	if err != nil {
 		log.Fatal(err)
 	}
+	// creating a Director Function for reverseProxy
+	// this is neccessary to rewrite the Host Header in order to get the correct page.
+	director := func(r *http.Request) {
+		r.URL.Scheme = rpURL.Scheme
+		r.URL.Host = rpURL.Host
+		r.Host = rpURL.Host
+		log.Debug("relay request to " + r.URL.String() + " for " + r.RemoteAddr)
+	}
+	// create the reverseProxy
 	rproxy := httputil.NewSingleHostReverseProxy(rpURL)
+	// apply the director function
+	rproxy.Director = director
 	return rproxy
 }
