@@ -73,7 +73,6 @@ func main() {
 
 // NewReverseProyx returns a HTTPHandler that is a reverseProxy for the given URL
 // It ajusts the Host header via a custom ReverseProxy.Director function.
-//
 func NewReverseProxy(URL string) *httputil.ReverseProxy {
 	// parse the supplied URL
 	rpURL, err := url.Parse(URL)
